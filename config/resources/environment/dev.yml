@@ -1,0 +1,27 @@
+Resources:
+  Cloud9Environment:
+    Type: AWS::Cloud9::EnvironmentEC2
+    DependsOn: PublicSubnet1
+    Properties:
+      OwnerArn: ${file(config/config.yml):cloud9.owner_arn}
+      Description:
+        Fn::Join:
+        - ''
+        -
+          - "Cloud9 IDE for "
+          - ${self:service}
+          - ' '
+          - ${self:provider.stage}
+          - ' environment'
+      AutomaticStopTimeMinutes: 10
+      InstanceType: ${file(config/config.yml):cloud9.instance_type}
+      Name:
+        Fn::Join:
+        - ''
+        -
+          - ${self:service}
+          - '-'
+          - ${self:provider.stage}
+          - "-cloud9"
+      SubnetId:
+        Ref: PublicSubnet1

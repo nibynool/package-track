@@ -1,0 +1,90 @@
+Resources:
+  AuroraServerlessSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    DependsOn: VPC
+    Properties:
+      GroupName:
+        Fn::Join:
+          - ''
+          -
+            - ${self:service}
+            - '-'
+            - ${self:provider.stage}
+            - "-aurtora-serverless-sg"
+      GroupDescription:
+        Fn::Join:
+          - ''
+          -
+            - "Security group with MySQL port open "
+            - ${self:service}
+            - ' '
+            - ${self:provider.stage}
+            - ' environment'
+      SecurityGroupIngress:
+        -
+          CidrIp: ${file(config/config.yml):vpc.cidr}
+          Description: "MySQL inbound access "
+          FromPort: 3306
+          IpProtocol: tcp
+          ToPort: 3306
+      VpcId:
+        Ref: VPC
+      Tags:
+        -
+          Key: Name
+          Value:
+            Fn::Join:
+            - ''
+            -
+              - ${self:service}
+              - ' '
+              - ${self:provider.stage}
+              - " MySQL Security Group"
+  DatabaseSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    DependsOn:
+      - PrivateSubnet1
+      - PrivateSubnet2
+    Properties:
+      DBSubnetGroupDescription:
+        Fn::Join:
+          - ''
+          -
+            - "Aurora Serverless DB subnet group "
+            - ${self:service}
+            - ' '
+            - ${self:provider.stage}
+            - ' environment'
+      DBSubnetGroupName:
+        Fn::Join:
+          - ''
+          -
+            - ${self:service}
+            - '-'
+            - ${self:provider.stage}
+            - "-aurora-serverless"
+      SubnetIds:
+        - Ref: PrivateSubnet1
+        - Ref: PrivateSubnet2
+  AuroraServerless:
+    Type: AWS::RDS::DBCluster
+    DependsOn:
+      - DatabaseSubnetGroup
+      - AuroraServerlessSecurityGroup
+    Properties:
+      DatabaseName: ${file(config/config.yml):database.name}
+      DBClusterIdentifier:
+        Fn::Join:
+          - ''
+          -
+            - ${self:service}
+            - '-'
+            - ${self:provider.stage}
+      DBSubnetGroupName:
+        Ref: DatabaseSubnetGroup
+      Engine: aurora
+      EngineMode: serverless
+      MasterUsername: ${file(config/config.yml):database.user}
+      MasterUserPassword: ${file(config/config.yml):database.password}
+      VpcSecurityGroupIds:
+        - Ref: AuroraServerlessSecurityGroup

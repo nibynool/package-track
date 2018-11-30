@@ -1,0 +1,33 @@
+cloud9:
+  instance_type: "t2.micro"
+  owner_arn: "arn:aws:iam::165657443288:root"
+database:
+  type: mysql2
+  user: root
+  password: abcd1234
+  host:
+    Fn::GetAtt:
+      - AuroraServerless
+      - "Endpoint.Address"
+  port:
+    Fn::GetAtt:
+      - AuroraServerless
+      - "Endpoint.Port"
+  name: ${self:service}
+  dsn:
+    Fn::Join:
+      - ''
+      -
+        - ${self:database.type}
+        - '://'
+        - ${self:database.user}
+        - ':'
+        - ${self:database.password}
+        - '@'
+        - ${self:database.host}
+        - ":"
+        - ${self:database.port}
+        - "/"
+        - ${self:database.name}
+vpc:
+  cidr: 10.128.0.0/16

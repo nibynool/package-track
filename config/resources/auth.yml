@@ -1,0 +1,97 @@
+Resources:
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: true
+        UnusedAccountValidityDays: 365
+      AliasAttributes:
+        - phone_number
+        - email
+        - preferred_username
+      AutoVerifiedAttributes:
+        - email
+      DeviceConfiguration:
+        ChallengeRequiredOnNewDevice: true
+        DeviceOnlyRememberedOnUserPrompt: true
+      EmailConfiguration:
+        ReplyToEmailAddress: michael@alphageek.com.au
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 6
+          RequireNumbers: true
+      Schema:
+        - AttributeDataType: DateTime
+          Mutable: false
+          Name: created_at
+          Required: false
+      UserPoolName:
+        Fn::Join:
+          - ''
+          - - ${self:service}
+            - '_'
+            - ${self:provider.stage}
+            - "_UserPool"
+  IdentityPool:
+    Type: AWS::Cognito::IdentityPool
+    DependsOn:
+      - UserPool
+    Properties:
+      IdentityPoolName:
+        Fn::Join:
+          - ''
+          - - ${self:service}
+            - '_'
+            - ${self:provider.stage}
+            - "_IdentityPool"
+      AllowUnauthenticatedIdentities: false
+      DeveloperProviderName: String
+      CognitoIdentityProviders:
+        - ClientId:
+            Fn::Join:
+              - ''
+              - - ${self:service}
+                - '_'
+                - ${self:provider.stage}
+                - "_IdentityPool"
+          ProviderName:
+            Fn::GetAtt:
+              - UserPool
+              - ProviderName
+          ServerSideTokenCheck: true
+  AdminUsers:
+    Type: AWS::Cognito::UserPoolGroup
+    DependsOn:
+      - UserPool
+    Properties:
+      Description: Administrators
+      GroupName: admin
+      UserPoolId:
+        Ref: UserPool
+  AdminUser:
+    Type: AWS::Cognito::UserPoolUser
+    DependsOn:
+      - UserPool
+    Properties:
+      DesiredDeliveryMediums:
+        - EMAIL
+      ForceAliasCreation: true
+      UserAttributes:
+        - Name: email
+          Value: michael@alphageek.com.au
+      Username: root
+      UserPoolId:
+        Ref: UserPool
+  AdminUserAdminUsers:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    DependsOn:
+      - AdminUser
+      - AdminUsers
+      - UserPool
+    Properties:
+      GroupName:
+        Ref: AdminUsers
+      Username:
+        Ref: AdminUser
+      UserPoolId:
+        Ref: UserPool
