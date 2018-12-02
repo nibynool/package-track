@@ -28,7 +28,7 @@ vpc:
 defaults:
   database:
     type: mysql2
-    user: ${opt:dbUser, 'root'}
+    user: ${opt:dbUser, self:service}
     password: ${opt:dbPass, 'abcd1234'}
     host: ${opt:dbHost, 'localhost'}
     port: ${opt:dbPort, '3306'}

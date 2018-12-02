@@ -1,23 +1,25 @@
+"use strict";
 
-exports.up = function(knex, Promise) {
+const table = 'packages';
+
+export const up = async (knex, Promise) => {
     return Promise.all(
         [
             knex.schema.createTable(
-                'packages',
-                function (table)
-                {
-                    table.increments();
-                    table.string('tracking_id');
+                table,
+                t => {
+                    t.increments();
+                    t.string('tracking_id');
                 }
             ),
         ]
     );
 };
 
-exports.down = function(knex, Promise) {
+export const down = async (knex, Promise) => {
     return Promise.all(
         [
-            knex.schema.dropTable('packages'),
+            knex.schema.dropTable(table),
         ]
     );
 };

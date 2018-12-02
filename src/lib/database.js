@@ -42,6 +42,7 @@ export const withDB = (f) => {
                     return f(trx);
                 } else {
                     // bail out, we're likely being replaced by a newer Lambda function
+                    console.log(DB_OUT_OF_SYNC);
                     throw DB_OUT_OF_SYNC;
                 }
             });
