@@ -2,7 +2,7 @@
   "name": "package-track",
   "version": "1.0.0",
   "description": "System to track packages from any freight company",
-  "main": "src/hello.js",
+  "main": "src/handlers/hello.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

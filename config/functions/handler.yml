@@ -1,26 +1,12 @@
 test_hello:
-  handler: src/hello.handler
-  environment:
-    DATABASE_TYPE: ${file(config/config.yml):database.type}
-    DATABASE_USER: ${file(config/config.yml):database.user}
-    DATABASE_PASSWORD: ${file(config/config.yml):database.password}
-    DATABASE_HOST: ${file(config/config.yml):database.host}
-    DATABASE_PORT: ${file(config/config.yml):database.port}
-    DATABASE_NAME: ${file(config/config.yml):database.name}
+  handler: src/handlers/hello.handler
   events:
     - http:
         path: /test/hello
         method: get
 
 test_dbconfig:
-  handler: src/dbconfig.handler
-  environment:
-    DATABASE_TYPE: ${file(config/config.yml):database.type}
-    DATABASE_USER: ${file(config/config.yml):database.user}
-    DATABASE_PASSWORD: ${file(config/config.yml):database.password}
-    DATABASE_HOST: ${file(config/config.yml):database.host}
-    DATABASE_PORT: ${file(config/config.yml):database.port}
-    DATABASE_NAME: ${file(config/config.yml):database.name}
+  handler: src/handlers/dbconfig.handler
   events:
     - http:
         path: /test/database

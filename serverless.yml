@@ -36,6 +36,14 @@ provider:
       - Ref: PrivateSubnet2
   stackTags:
     SERVICE: ${self:service}
+  environment:
+    DATABASE_TYPE: ${file(config/config.yml):database.type}
+    DATABASE_USER: ${file(config/config.yml):database.user}
+    DATABASE_PASSWORD: ${file(config/config.yml):database.password}
+    DATABASE_HOST: ${file(config/config.yml):database.host}
+    DATABASE_PORT: ${file(config/config.yml):database.port}
+    DATABASE_NAME: ${file(config/config.yml):database.name}
+
 #  memorySize: 256
 
 # you can overwrite defaults here
@@ -61,6 +69,11 @@ provider:
 # you can define service wide environment variables here
 #  environment:
 #    variable1: value1
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
 
 # you can add packaging information here
 #package:

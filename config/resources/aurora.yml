@@ -75,10 +75,9 @@ Resources:
       DatabaseName: ${file(config/config.yml):database.name}
       DBClusterIdentifier:
         Fn::Join:
-          - ''
+          - '-'
           -
             - ${self:service}
-            - '-'
             - ${self:provider.stage}
       DBSubnetGroupName:
         Ref: DatabaseSubnetGroup
@@ -88,3 +87,93 @@ Resources:
       MasterUserPassword: ${file(config/config.yml):database.password}
       VpcSecurityGroupIds:
         - Ref: AuroraServerlessSecurityGroup
+  SSMDatabaseType:
+    Type: AWS::SSM:Parameter
+    DependsOn:
+      - AuroraServerless
+    Properties:
+      Name:
+        Fn::Join:
+          - '/'
+          -
+            - ${self:service}
+            - ${self:provider.stage}
+            - DatabaseType
+      Type: String
+      Value: ${file(config/config.yml):database.type}
+  SSMDatabaseUser:
+    Type: AWS::SSM:Parameter
+    DependsOn:
+      - AuroraServerless
+    Properties:
+      Name:
+        Fn::Join:
+          - '/'
+          -
+            - ${self:service}
+            - ${self:provider.stage}
+            - DatabaseUser
+      Type: String
+      Value: ${file(config/config.yml):database.user}
+  SSMDatabasePassword:
+    Type: AWS::SSM:Parameter
+    DependsOn:
+      - AuroraServerless
+    Properties:
+      Name:
+        Fn::Join:
+          - '/'
+          -
+            - ${self:service}
+            - ${self:provider.stage}
+            - DatabasePassword
+      Type: String
+      Value: ${file(config/config.yml):database.password}
+  SSMDatabaseHost:
+    Type: AWS::SSM:Parameter
+    DependsOn:
+      - AuroraServerless
+    Properties:
+      Name:
+        Fn::Join:
+          - '/'
+          -
+            - ${self:service}
+            - ${self:provider.stage}
+            - DatabaseHost
+      Type: String
+      Value:
+        Fn::GetAtt:
+          - AuroraServerless
+          - "Endpoint.Address"
+  SSMDatabasePort:
+    Type: AWS::SSM:Parameter
+    DependsOn:
+      - AuroraServerless
+    Properties:
+      Name:
+        Fn::Join:
+          - '/'
+          -
+            - ${self:service}
+            - ${self:provider.stage}
+            - DatabasePort
+      Type: String
+      Value:
+        Fn::GetAtt:
+          - AuroraServerless
+          - "Endpoint.Port"
+  SSMDatabaseName:
+    Type: AWS::SSM:Parameter
+    DependsOn:
+      - AuroraServerless
+    Properties:
+      Name:
+        Fn::Join:
+          - '/'
+          -
+            - ${self:service}
+            - ${self:provider.stage}
+            - DatabaseName
+      Type: String
+      Value: ${file(config/config.yml):database.password}

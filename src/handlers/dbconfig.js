@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-import { withDB } from '../database';
+import { withDB } from "../lib/database";
 
-module.exports.handler = async (event, context) => {
+export const handler = async (event, context) => {
     return  {
         statusCode: 200,
         body: JSON.stringify(

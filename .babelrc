@@ -1,0 +1,15 @@
+{
+  "comments": false,
+  "presets": [
+    [
+      "env",
+      {
+        "node": "8.10",
+      }
+    ]
+  ],
+  "plugins": [
+    "transform-decorators-legacy",     // If you want to use the decorators plugin in your code
+    // "source-map-support"
+  ]
+}

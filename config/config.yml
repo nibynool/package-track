@@ -2,18 +2,12 @@ cloud9:
   instance_type: "t2.micro"
   owner_arn: "arn:aws:iam::165657443288:root"
 database:
-  type: mysql2
-  user: root
-  password: abcd1234
-  host:
-    Fn::GetAtt:
-      - AuroraServerless
-      - "Endpoint.Address"
-  port:
-    Fn::GetAtt:
-      - AuroraServerless
-      - "Endpoint.Port"
-  name: ${self:service}
+  type: ${ssm:/${self:service}/${self:provider.stage}/DatabaseType, file(config/config.yml):defaults.database.type}
+  user: ${ssm:/${self:service}/${self:provider.stage}/DatabaseUser, file(config/config.yml):defaults.database.user}
+  password: ${ssm:/${self:service}/${self:provider.stage}/DatabasePassword, file(config/config.yml):defaults.database.password}
+  host: ${ssm:/${self:service}/${self:provider.stage}/DatabaseHost, file(config/config.yml):defaults.database.host}
+  port: ${ssm:/${self:service}/${self:provider.stage}/DatabasePort, file(config/config.yml):defaults.database.port}
+  name: ${ssm:/${self:service}/${self:provider.stage}/DatabaseName, file(config/config.yml):defaults.database.name}
   dsn:
     Fn::Join:
       - ''
@@ -31,3 +25,11 @@ database:
         - ${self:database.name}
 vpc:
   cidr: 10.128.0.0/16
+defaults:
+  database:
+    type: mysql2
+    user: ${opt:dbUser, 'root'}
+    password: ${opt:dbPass, 'abcd1234'}
+    host: ${opt:dbHost, 'localhost'}
+    port: ${opt:dbPort, '3306'}
+    name: ${opt:dbName, self:service}

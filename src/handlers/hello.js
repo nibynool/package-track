@@ -1,6 +1,6 @@
 'use strict';
 
-import { withDB } from '../database';
+import { withDB } from '../lib/database';
 
 module.exports.handler = withDB(async (event, context) => {
     return  {

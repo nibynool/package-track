@@ -4,6 +4,11 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     mode: slsw.lib.options.stage=='prod'?'production':'development',
+    resolve: {
+        extensions: [
+            '.js',
+        ]
+    },
     target: 'node',
     externals: [
         'mssql', 'mssql/lib/base', 'mssql/package.json',
@@ -16,16 +21,21 @@ module.exports = {
     optimization: {
         minimize: false,
         minimizer: [
-            new UglifyJsPlugin({
-                parallel: false,
-                uglifyOptions: {
-                    mangle: false,
-                },
-            })
-            ,
+            new UglifyJsPlugin(
+                {
+                    parallel: false,
+                    uglifyOptions: {
+                        mangle: false,
+                    },
+                }
+            ),
         ],
     },
     plugins: [
-        new CopyWebpackPlugin(['migrations/**',]),
+        new CopyWebpackPlugin(
+            [
+                'migrations/**',
+            ]
+        ),
     ],
 };
