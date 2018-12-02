@@ -13,8 +13,6 @@ const knex_config = {
     },
 };
 
-console.log(knex_config);
-
 const knex = Knex(knex_config);
 
 // This will run once when the Lambda container starts
